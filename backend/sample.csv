@@ -1,0 +1,4 @@
+service,resource_name,usage_hours,avg_cpu,avg_mem,monthly_cost,iops,avg_gpu_util
+compute-instance,my-instance-1,720,0.05,25,120,10,0
+storage-bucket,my-bucket,720,0.0,5,80,0.2,0
+gpu-instance,my-gpu,300,0.4,60,300,50,0.05

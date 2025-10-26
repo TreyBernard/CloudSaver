@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from analyzer import analyze_billing_csv
+from app.analyzer import analyze_billing_csv
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,7 +10,7 @@ app = FastAPI(title="CloudSaver Cost Advisor")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Adjust this later for production
+    allow_origins=["*"],  # adjust this in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,13 +20,18 @@ app.add_middleware(
 async def analyze(file: UploadFile = File(...)):
     if not file.filename.endswith('.csv'):
         raise HTTPException(400, "Invalid file type. Please upload a CSV file.")
-    
+
     content = await file.read()
     csv_text = content.decode("utf-8", errors="replace")
+
     try:
         result = analyze_billing_csv(csv_text)
     except Exception as e:
+        import traceback
+        tb = traceback.format_exc()
+        print("Error processing CSV:\n", tb)
         raise HTTPException(500, f"Analysis failed: {e}")
+
     return result
 
 if __name__ == "__main__":
