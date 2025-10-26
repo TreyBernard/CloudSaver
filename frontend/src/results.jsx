@@ -158,7 +158,7 @@ const Results = ({ data }) => {
       </div>
 
       <div className="findings-list" style={{ marginTop: "3rem", paddingLeft: "6rem", paddingRight: "6rem" }}>
-        <h2 style={{ fontWeight: 700, marginBottom: "1rem" }}>All Findings</h2>
+        <h2 style={{ color: "#000000", fontWeight: 700, marginBottom: "1rem" }}>All Findings</h2>
 
         {items.map((f, idx) => (
           <div

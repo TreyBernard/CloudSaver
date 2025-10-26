@@ -72,7 +72,7 @@ const UploadForm = () => {
 
       {results && (
         <div className="results-section">
-          <h2>Analysis Results</h2>
+          <h2 style = {{color: "#000000"}}>Analysis Results</h2>
           <Results data={results} />
         </div>
       )}
