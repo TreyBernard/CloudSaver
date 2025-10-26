@@ -1,87 +1,81 @@
-import os
-import openai
-import json
-import re
+# app/prompts.py
+import os 
+from openai import AsyncOpenAI 
 from dotenv import load_dotenv
-from openai import OpenAI 
-
+import json
 load_dotenv()
 
-try:
-    client = OpenAI()
-except openai.OpenAIError:
-    print("Make sure OPENAI_API_KEY is set.")
-    client = None
+api_key = os.getenv("OPENAI_API_KEY") 
+llm_Model = os.getenv("LLM_MODEL", "gpt-4o-mini") 
+llm_Base_Url = os.getenv("LLM_BASE_URL")
 
-llm_Model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+client = None
+if api_key:
+    try:
+        client = AsyncOpenAI(
+            api_key=api_key,
+            base_url=llm_Base_Url if llm_Base_Url else None,
+        )
+    except Exception as e:
+        print(f"Failed to initialize AsyncOpenAI client: {e}")
 
-def response(item, key, savings, confidence):
+async def response(item, key, savings, confidence):
+    """
+    Generate an explanation and action command from the LLM based on a resource finding.
+    returns: explanation, action command
+    """
     if not client:
-        #Handle case where client failed to initialize
-        explanation = "OpenAI client initialization failed, check server logs and API key"
-        action_plan = "The OpenAI API key or connection is not configured correctly, check back in logs"
-        return explanation, action_plan
-
-    service = item.get("service", "Unknown Service")
-    resource = item.get("resource_name", "unknown")
-    cpu = item.get("avg_cpu", 0) * 100 
-    mem = item.get("avg_mem", 0) * 100 
-    cost = item.get("monthly_cost", 0)
+        return "LLM service not initialized. Check OPENAI_API_KEY.", "Manual review recommended."
+        
+    service = item.get("service","Unknown Service")
+    resource = item.get("resource_name","unknown")
+    cpu = item.get("avg_cpu",0)
+    mem = item.get("avg_mem",0)
+    cost = item.get("monthly_cost",0)
 
     mapping = {
-        "resize_instance": f"Rightsizing (e.g., downsize instance type) for a VM with low CPU ({cpu:.1f}%) and Memory ({mem:.1f}%) utilization.",
-        "move_to_cold_storage": "Move infrequently accessed data to a cheaper storage class (e.g., Nearline/Coldline/Archive).",
-        "remove_gpu_or_schedule_batch": "Remove an underutilized GPU or switch to on-demand batch processing.",
-        "review_bigquery_optimization": "Review BigQuery table for optimization. Check partitioning, clustering, or if data qualifies for long-term storage.",
+        "resize_instance": "Resize the instance to a small machine type (reduce CPU/memory).",
+        "move_to_cold_storage": "Move infrequently accesed data to cold storage class (Nearline/Coldline/Archive).",
+        "remove_gpu_or_schedule_batch": "Delete GPU from this instance or schedule the workload to run in batch on demand.",
     }
     suggestion = mapping.get(key, key)
 
     prompt = f"""
-You are an expert Google Cloud (GCP) and AWS FinOps assistant. Your task is to provide a clear, actionable optimization plan for an engineer.
-You MUST return ONLY a single, valid JSON object with two keys: "explanation" and "action_plan". Do not include any text before or after the JSON.
+You are a cloud cost optimization expert and FinOps assistant. Given the following resource summary generate:
+1. A concise one paragraph plain English explanation of why this resource is innefficient.
+2. A short, concise actionable reccomendation (ideal CLI) or single step by step instruction (around 2-5 sentences) an engineer can run to fix this issue.
+3. A conservative estimate sentence that repeats the estimated monthly savings ${savings} and explains confidence level{confidence}.
+Return JSON with keys: explanation, action command.
 
-Given the following resource summary:
+Resource:
 - Service: {service}
 - Resource Name: {resource}
-- Average CPU Utilization: {cpu:.1f}%
-- Average Memory Utilization: {mem:.1f}%
-- Monthly Cost: ${cost:.2f}
-- Suggested Fix: {suggestion}
-- Estimated Monthly Savings: ${savings:.2f}
-- Confidence: {confidence}
+- Average CPU Utilization: {round(cpu*100, 2)}%
+- Average Memory Utilization: {round(mem*100, 2)}%
+- Monthly Cost: ${round(cost, 2)}
 
-Generate the following:
-1. "explanation": A concise, one-paragraph explanation of *why* this resource is inefficient, referencing its specific metrics.
-2. "action_plan": A detailed, step-by-step guide for an engineer to execute this fix.
-   - Use **markdown** for formatting.
-   - For CLI commands (gcloud, aws-cli), provide the *exact* command in a code block. Use placeholders like '<resource_name>' or '<new_machine_type>' where appropriate.
-   - For console (UI) actions, provide a numbered list of steps (e.g., "1. Navigate to the Compute Engine console...").
-   - Be specific and practical.
+Suggested Fix: {suggestion}
+Use clear, professional, and simple English suitable for a technical report. Be consise, factual, and avoid any fluff, so stay conservative. If you are not sure, say 'uncertain' and recommend manual review of the data.
 """
     
     try:
-        res = client.chat.completions.create(
-            model=llm_Model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=500,
-            temperature=0.1,
-            response_format={"type": "json_object"},
+        res = await client.chat.completions.create( 
+            model = llm_Model,
+            messages = [{"role": "user", "content": prompt}],
+            max_tokens = 300,
+            temperature = 0.2,
+            response_format={"type": "json_object"} 
         )
-        text = res.choices[0].message.content.strip()
-        json_match = re.search(r'\{.*\}', text, re.DOTALL)
-        if not json_match:
-            raise ValueError("No JSON object found in LLM response")
-            
-        cleaned_text = json_match.group(0)
-        data = json.loads(cleaned_text)
-        
-        explanation = data.get("explanation", "No explanation provided.")
-        action_plan = data.get("action_plan", "No action plan provided. Manual review recommended.")
-        
-        return explanation, action_plan
-
+        text = res.choices[0].message.content.strip() 
     except Exception as e:
-        print(f"Error in LLM call or parsing for resource {resource}: {e}") 
-        explanation = f"The resource {resource} ({service}) shows potential for optimization. The suggestion is to '{suggestion}' based on its usage metrics (e.g., CPU: {cpu:.1f}%, Mem: {mem:.1f}%) and cost of ${cost:.2f}."
-        action_plan = f"**Suggestion:** {suggestion}\n\n*Action: Please review this resource manually. The automated step-by-step generation failed. Based on the suggestion, you should investigate rightsizing the instance or changing its storage class.*"
-        return explanation, action_plan
+        print(f"OpenAI API call failed: {e}")
+        explanation = f"{service} resource {resource} could be optimized. Consider {suggestion}."
+        action = "Please review the resource and resize, or change storage as appropriate."
+        return explanation, action
+    
+    try:
+        data = json.loads(text)
+        return data.get("explanation",""), data.get("action command","")
+    except Exception:
+        print("Failed to parse LLM response as JSON.")
+        return text, suggestion
