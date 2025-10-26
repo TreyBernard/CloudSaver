@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UploadForm from "./UploadForm";
 import Results from "./results";
+import "./App.css"
 
 export default function App() {
   const [results, setResults] = useState(null);
@@ -10,7 +11,7 @@ export default function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>☁️ OpenCloud Cost Advisor</h1>
+        <h1>☁️ OpenCloud Cost Advisor ☁️</h1>
         <p>Upload a cloud billing CSV to generate an optimal saving plan.</p>
       </header>
       <main>

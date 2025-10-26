@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+    color: #333;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.app-header {
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.app-header h1 {
+    font-size: 2.2rem;
+    color: #1a3a8a;
+    margin-bottom: 0.5rem;
+}
+
+.app-header p {
+    color: #555;
+    font-size: 1rem;
+}
+
+.upload-container {
+    margin-top: 1rem;
+    background: #fff;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.file-icon {
+    font-size: 1.2rem;
+    color: #3b82f6;
+}
+
+.file-label {
+    border: 2px dashed #93c5fd;
+    padding: 1.5rem 3rem;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.file-label:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+  
+.file-input {
+    display: none;
+}
+
+.upload-button {
+    background-color: #2563eb;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.upload-button:hover {
+    background-color: #1d4ed8;
+}
+  
+.upload-button:disabled {
+    background-color: #93c5fd;
+    cursor: not-allowed;
+}
+  
+.results-section {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.error-message {
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+  
+.loader {
+    margin-top: 1rem;
+    color: #1d4ed8;
+    font-weight: 500;
+    text-align: center;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+  
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}

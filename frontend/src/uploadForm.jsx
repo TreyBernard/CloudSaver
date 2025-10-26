@@ -47,17 +47,32 @@ const UploadForm = () => {
   };
   
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept=".csv" onChange={handleFileChange} />
-        <button type="submit" disabled={loading}>
-          {loading ? "Analyzing..." : "Upload & Analyze"}
+    <div className="upload-container">
+      <form onSubmit={handleSubmit} className="upload-form">
+        <label className="file-label">
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="file-input"
+          />
+          {file ? (
+            <div className="file-display">
+              <span className="file-icon">📄</span>
+              <span>{file.name}</span>
+            </div>
+          ) : (
+            "Click or drag a CSV file to upload"
+          )}
+        </label>
+        <button type="submit" diabled={loading} className="upload-button">
+          {loading ? "Analyzing..." : "Upload and Analyze"}
         </button>
       </form>
 
-      {/* show raw JSON quickly while debugging */}
       {results && (
-        <div style={{ marginTop: 16 }}>
+        <div className="results-section">
+          <h2>Analysis Results</h2>
           <Results data={results} />
         </div>
       )}
