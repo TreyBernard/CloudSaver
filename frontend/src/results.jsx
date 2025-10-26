@@ -112,7 +112,7 @@ const Results = ({ data }) => {
   const topSavingsData = getTopSavings(items);
 
   return (
-    <section className="results-section">
+    <section className="results-section" style = {{color: "#000000"}}>
       {/* 1. Summary Cards */}
       <div className="results-summary">
         <div className="summary-stat">
