@@ -20,7 +20,7 @@ export default function App() {
           </div>
           
           <h1>
-            <span className="header-main">OpenCloud</span>
+            <span className="header-main">CloudSaver</span>
             <span className="header-gradient">Cost Advisor</span>
           </h1>
           <p>Upload a cloud billing CSV to generate an optimal saving plan</p>
