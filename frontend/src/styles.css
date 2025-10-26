@@ -1,3 +1,283 @@
-body {margin: 0; padding: 24px; background: #f8fafc; color: #0f172a;}
-h1 { margin: 0 0 8px 0; }
-button { padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; }
+/* styles.css */
+:root {
+    --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+    --color-text: #0f172a;
+    --color-text-secondary: #475569;
+    --color-bg: #f8fafc;
+    --color-bg-card: #ffffff;
+    --color-border: #e2e8f0;
+    --color-primary: #3b82f6;
+    --color-primary-hover: #2563eb;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --border-radius: 8px;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+  
+  .app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .app-header {
+    text-align: center;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 24px;
+  }
+  
+  .app-header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .app-header p {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    margin-top: 8px;
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  
+  /* Upload Form */
+  .upload-form {
+    background: var(--color-bg-card);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  
+  .upload-dropzone {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 40px 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  
+  .upload-dropzone:hover,
+  .upload-dropzone.dragging {
+    border-color: var(--color-primary);
+    background-color: #eff6ff;
+  }
+  
+  .upload-dropzone p {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+  }
+  
+  .upload-button {
+    padding: 12px 24px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .upload-button:hover {
+    background: var(--color-primary-hover);
+  }
+  
+  .upload-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+  
+  .file-name {
+    margin-top: 16px;
+    font-weight: 500;
+  }
+  
+  /* Loader */
+  .loader {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 40px;
+  }
+  
+  /* Results */
+  .results-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .results-summary {
+    background: var(--color-bg-card);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+  }
+  
+  .summary-stat h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+  
+  .summary-stat p {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  
+  .summary-stat.findings p {
+    color: var(--color-text);
+  }
+  
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  
+  .chart-container {
+    background: var(--color-bg-card);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    height: 400px; /* Give charts a fixed height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .chart-container h3 {
+    margin-top: 0;
+    text-align: center;
+  }
+  
+  /* Findings List */
+  .findings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .finding-card {
+    background: var(--color-bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--color-border);
+    overflow: hidden; /* To contain header */
+  }
+  
+  .finding-header {
+    padding: 16px 24px;
+    background-color: #f1f5f9;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .finding-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  
+  .finding-header .service {
+    font-weight: 400;
+    color: var(--color-text-secondary);
+  }
+  
+  .finding-header .savings {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #16a34a;
+  }
+  
+  .finding-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+  }
+  
+  @media (max-width: 768px) {
+    .finding-body {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .finding-section h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.05em;
+  }
+  
+  .finding-section p {
+    margin-top: 0;
+  }
+  
+  /* Styles for markdown content */
+  .action-plan-content {
+    font-size: 0.95rem;
+  }
+  .action-plan-content h4 {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .action-plan-content p {
+    margin-bottom: 12px;
+  }
+  .action-plan-content ol,
+  .action-plan-content ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  .action-plan-content li {
+    margin-bottom: 6px;
+  }
+  .action-plan-content code {
+    font-family: monospace;
+    background-color: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .action-plan-content pre {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .action-plan-content pre code {
+    background-color: transparent;
+    padding: 0;
+  }
