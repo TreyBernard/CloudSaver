@@ -1,4 +1,3 @@
-// app.jsx
 import React, { useState } from "react";
 import UploadForm from "./UploadForm";
 import Results from "./results";

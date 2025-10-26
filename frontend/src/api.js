@@ -1,7 +1,6 @@
-// uploadForm.jsx
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { analyzeBillingData } from "./api"; // Using your api.js
+import { analyzeBillingData } from "./api"; 
 
 const UploadForm = ({ onUploadStart, onUploadSuccess, onUploadError }) => {
   const [file, setFile] = useState(null);
@@ -27,13 +26,11 @@ const UploadForm = ({ onUploadStart, onUploadSuccess, onUploadError }) => {
     onUploadStart();
 
     try {
-      // Read and log file preview
       const reader = new FileReader();
       reader.onload = async (ev) => {
         const text = ev.target.result;
         console.log("File preview (first 1000 chars):\n", text.slice(0, 1000));
 
-        // Now upload
         const data = await analyzeBillingData(file);
         console.log("API response data:", data);
         onUploadSuccess(data);

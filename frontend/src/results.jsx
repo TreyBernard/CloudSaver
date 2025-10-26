@@ -1,4 +1,3 @@
-// src/results.jsx
 import React from "react";
 import { Bar, Pie, Doughnut } from "react-chartjs-2";
 import {
@@ -9,11 +8,9 @@ import {
   Title,
   Tooltip,
   Legend,
-  ArcElement, // Import for Pie/Doughnut
+  ArcElement,
 } from "chart.js";
-import ReactMarkdown from "react-markdown"; // Import for rendering steps
-
-// Register all necessary components
+import ReactMarkdown from "react-markdown"; 
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,8 +20,6 @@ ChartJS.register(
   Legend,
   ArcElement
 );
-
-// --- Helper Functions for Chart Data ---
 
 const getSavingsByService = (items) => {
   const serviceMap = items.reduce((acc, item) => {
@@ -36,6 +31,7 @@ const getSavingsByService = (items) => {
 
   const labels = Object.keys(serviceMap);
   const data = Object.values(serviceMap);
+
   return {
     labels,
     datasets: [
@@ -99,8 +95,6 @@ const getTopSavings = (items, topN = 10) => {
   };
 };
 
-// --- Main Component ---
-
 const Results = ({ data }) => {
   const items = Array.isArray(data?.findings) ? data.findings : [];
   const totalSavings = data?.total_estimated_monthly_savings || 0;
@@ -113,8 +107,6 @@ const Results = ({ data }) => {
       </div>
     );
   }
-
-  // Generate chart data
   const savingsByServiceData = getSavingsByService(items);
   const savingsByIssueData = getSavingsByIssueType(items);
   const topSavingsData = getTopSavings(items);

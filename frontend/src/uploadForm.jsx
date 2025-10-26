@@ -1,4 +1,3 @@
-// src/uploadForm.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import Results from "./results";
@@ -7,25 +6,18 @@ const UploadForm = () => {
   const [file, setFile] = useState(null);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) return alert("Please select a CSV file.");
-  
-    // Log file meta
     console.log("Uploading file:", file.name, "size:", file.size);
   
-    // Read and print first 1000 chars to ensure contents are correct
     const reader = new FileReader();
     reader.onload = async (ev) => {
       const text = ev.target.result;
-      console.log("File preview (first 1000 chars):\n", text.slice(0, 1000));
-  
-      // Now upload
+      console.log("File preview (first 1000 chars):\n", text.slice(0, 1000));  
       const formData = new FormData();
       formData.append("file", file);
   
@@ -54,7 +46,6 @@ const UploadForm = () => {
     reader.readAsText(file);
   };
   
-
   return (
     <div>
       <form onSubmit={handleSubmit}>

@@ -1,4 +1,3 @@
-# app/main.py (trimmed for production/dev, no debug prints)
 import os
 import logging
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -13,7 +12,6 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="CloudSaver Cost Advisor")
 
-# Allow local dev origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
